@@ -1,9 +1,13 @@
+from dotenv import load_dotenv
 import streamlit as st
 import requests
+import os
+
+load_dotenv()
 
 # 네이버 API 키
-CLIENT_ID = "eKGtxOEE_rVXoZmAtDhW"
-CLIENT_SECRET = "eWY9QdZ7ti"
+CLIENT_ID = os.getenv("CID")
+CLIENT_SECRET = os.getenv("CSEC")
 
 # 책 검색 함수
 def search_books(query, display=5):
