@@ -44,15 +44,4 @@ print("dataFrame length")
 print("people_per_df: {}\nper_pr_df: {}".format(len(people_pr_df), len(per_pr_df)))
 
 print("----------------------------------------------------------------")
-# str_param = ("정보처리기  사").replace(' ','')
-
-# pr_df.loc[
-#         (pr_df['종목별'].str.contains(str_param))
-#         &(pr_df['단위']=='%') 
-#         &(pr_df['2019 년']!=100)&(pr_df['2020 년']!=100)&(pr_df['2021 년']!=100)
-#         &(pr_df['2019 년']!=0)&(pr_df['2020 년']!=0)&(pr_df['2021 년']!=0)
-#         ,
-#         '종목별':'2021 년' # 이거 대신 ['종목별','항목 ','2019 년','2020 년','2021 년'] 이거도 가능 # 이거 안쓰면 전체 컬럼 값 출력
-# ].sort_values(by='2019 년', ascending=True).reset_index(drop=True)
-print("----------------------------------------------------------------")
 
