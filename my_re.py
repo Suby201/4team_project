@@ -28,7 +28,7 @@ class CertificationSearchApp:
             pd.DataFrame: 로드 및 전처리된 데이터프레임
         """
         try:
-            df = pd.read_csv("자격증.csv", encoding='cp949')  # CSV 파일 읽기 (인코딩 지정)
+            df = pd.read_csv("data\자격증.csv", encoding='cp949')  # CSV 파일 읽기 (인코딩 지정)
             st.success("✅ 자격증 데이터 로드 성공!") # 데이터 로드 성공 메시지 표시
         except FileNotFoundError:
             st.error("❌ 자격증.csv 파일을 찾을 수 없습니다. 앱과 동일한 경로에 파일이 있는지 확인해주세요.")
