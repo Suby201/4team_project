@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import platform
+import bar_graph as bg
 
 # streamlit run streamlit_app_re.py
 
@@ -92,23 +93,10 @@ class CertificationVisualizer:
 # 사용 예시 (bg 객체가 이미 정의되어 있다고 가정)
 if __name__ == '__main__':
     # 가상의 데이터프레임 생성 (실제로는 bg.people_pr_df, bg.per_pr_df 사용)
-    data_people = {'종목별': ['자격증A', '자격증B'],
-                     '항목': ['필기', '실기'],
-                     '2019 년': [100, 50],
-                     '2020 년': [120, 60],
-                     '2021 년': [150, 70],
-                     '2022 년': [180, 80],
-                     '2023 년': [200, 90]}
-    people_df = pd.DataFrame(data_people)
-
-    data_per = {'종목별': ['자격증A', '자격증B'],
-                '항목': ['필기', '실기'],
-                '2019 년': [20, 30],
-                '2020 년': [25, 35],
-                '2021 년': [30, 40],
-                '2022 년': [35, 45],
-                '2023 년': [40, 50]}
-    per_df = pd.DataFrame(data_per)
+    
+    # 📌 전처리된 데이터프레임
+    people_df = bg.people_pr_df  # 합격 인원
+    per_df = bg.per_pr_df        # 합격률
 
     visualizer = CertificationVisualizer(people_df, per_df)  # CertificationVisualizer 클래스의 인스턴스 생성
     visualizer.display_results()  # 결과 표시 메서드 호출
