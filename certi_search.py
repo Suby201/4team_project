@@ -1,5 +1,5 @@
 import streamlit as st
-from app_re import BookSearchApp as bs
+from app_Re import BookSearchApp as bs
 from my_re import CertificationSearchApp as cs
 from test_calender import QnetScheduleApp as qs
 from streamlit_app_re import CertificationVisualizer as cv
