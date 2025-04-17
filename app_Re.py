@@ -15,8 +15,8 @@ class BookSearchApp:
         self.CLIENT_ID = os.getenv("CID")
         self.CLIENT_SECRET = os.getenv("CSEC")
 
-        # UI 설정
-        st.set_page_config(page_title="자격증 책 검색기", page_icon="📚")
+        # UI 설정 (set_page_config는 여기서 제거합니다.)
+        # st.set_page_config(page_title="자격증 책 검색기", page_icon="📚")
         st.title("📚 자격증 관련 책 검색기")
         st.write("검색창에 자격증 이름을 입력하면 관련 서적을 카드 형태로 보여드려요!")
 
@@ -25,8 +25,10 @@ class BookSearchApp:
         self.display_num = st.slider("📚 책 개수 선택", 1, 10, 5)
 
         # 검색 버튼
-        if st.button("검색하기"):
-            self.display_book_results()
+        self.search_button = st.button("검색하기", on_click=self._set_search_button_clicked)
+
+    def _set_search_button_clicked(self):
+        st.session_state['search_button_clicked'] = True
 
     def search_books(self, query, display=5):
         """
@@ -75,9 +77,11 @@ class BookSearchApp:
                         st.write(f"**정가**: {book.get('price', '정보 없음')}원")  # 정가 정보 표시 (없으면 '정보 없음' 출력)
                         st.write(f"**할인가**: {book.get('discount', '정보 없음')}원")  # 할인가 정보 표시 (없으면 '정보 없음' 출력)
                         st.markdown(f"[📖 책 보러가기]({book['link']})")  # 책 링크를 Markdown 형태로 표시
-                st.divider()  # 각 책 카드 사이에 구분선 추가
+                    st.divider()  # 각 책 카드 사이에 구분선 추가
         else:
             st.info("검색 결과가 없어요 😥")  # 검색 결과가 없을 때 안내 메시지 표시
 
 if __name__ == "__main__":
     app = BookSearchApp()  # BookSearchApp 클래스의 인스턴스 생성
+    if st.button("검색하기"): # 단독 실행 시 검색 버튼 동작
+        app.display_book_results()
