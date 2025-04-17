@@ -9,6 +9,7 @@ import bar_graph as bg
 st.set_page_config(page_title="자격증 정보 통합 검색", page_icon=" 통합")
 
 def main():
+    search_keyword = st.text_input("검색할 자격증을 입력해주세요. ")
     tabs = ["자격증 검색", "합격 인원 및 합격률 보기", "책 검색", "시험일정 확인"]
     selected_tab = st.radio("메뉴", tabs, horizontal=True,
                              key="main_tab_selector") # 탭 선택 라디오 버튼
@@ -17,12 +18,15 @@ def main():
 
     if selected_tab == "자격증 검색":
         app = cs()
+        app.keyword = search_keyword
         app.display_results()
     elif selected_tab == "합격 인원 및 합격률 보기":
         visualizer = cv(bg.people_pr_df, bg.per_pr_df)  # CertificationVisualizer 클래스의 인스턴스 생성
+        visualizer.search_term = search_keyword
         visualizer.display_results()  # 결과 표시 메서드 호출
     elif selected_tab == "책 검색":
         app = bs()
+        app.query = search_keyword
         if st.session_state.get('search_button_clicked', False): # app_re.py의 버튼 클릭 상태를 확인
             app.display_book_results()
     elif selected_tab == "시험일정 확인":

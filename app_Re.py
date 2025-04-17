@@ -21,7 +21,7 @@ class BookSearchApp:
         st.write("검색창에 자격증 이름을 입력하면 관련 서적을 카드 형태로 보여드려요!")
 
         # 사용자 입력 위젯 생성
-        self.query = st.text_input("🔍 자격증 이름을 입력하세요", "정보처리기사")
+        self.query = st.text_input("🔍 자격증 이름을 입력하세요", placeholder="정보처리기사")
         self.display_num = st.slider("📚 책 개수 선택", 1, 10, 5)
 
         # 검색 버튼
