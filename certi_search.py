@@ -1,17 +1,9 @@
 import streamlit as st
-import pandas as pd
-from bs4 import BeautifulSoup
-import requests
-from dotenv import load_dotenv
-import os
-import json
-import matplotlib.pyplot as plt
-import platform
-import bar_graph as bg
 from app_re import BookSearchApp as bs
 from my_re import CertificationSearchApp as cs
 from test_calender import QnetScheduleApp as qs
 from streamlit_app_re import CertificationVisualizer as cv
+import bar_graph as bg
 
 # 페이지 설정은 여기서 한 번만 합니다.
 st.set_page_config(page_title="자격증 정보 통합 검색", page_icon=" 통합")
