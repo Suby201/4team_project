@@ -83,5 +83,5 @@ class BookSearchApp:
 
 if __name__ == "__main__":
     app = BookSearchApp()  # BookSearchApp 클래스의 인스턴스 생성
-    if st.button("검색하기"): # 단독 실행 시 검색 버튼 동작
+    if st.session_state.get('search_button_clicked'):
         app.display_book_results()

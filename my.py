@@ -4,7 +4,7 @@ import pandas as pd
 # 데이터 로드 함수
 @st.cache_data
 def load_data():
-    df = pd.read_csv("자격증.csv", encoding='cp949')
+    df = pd.read_csv("data\자격증.csv", encoding='cp949')
     df = df.drop(columns=[col for col in df.columns if "Unnamed" in col])
     df.columns = df.columns.str.strip()  # 컬럼명 공백 제거
     return df
