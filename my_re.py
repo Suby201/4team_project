@@ -1,5 +1,5 @@
-import streamlit as st
-import pandas as pd
+import streamlit as st  # Streamlit 라이브러리 import (웹 앱 개발)
+import pandas as pd  # Pandas 라이브러리 import (데이터 조작 및 분석)
 
 # streamlit run my_re.py
 
@@ -14,10 +14,12 @@ class CertificationSearchApp:
         st.title("📘 자격증 종목 통계 검색")  # 앱 제목 표시
         st.markdown("자격증 **종목명**을 입력하면 연도별 응시 및 합격률 데이터를 확인할 수 있습니다.")  # 앱 설명 Markdown 텍스트 표시
         self.df = self._load_data()  # 데이터를 로드하여 클래스 변수에 저장
-        # self.keyword = st.text_input("🔍 자격증(종목) 이름을 입력하세요:", placeholder="예: 정보처리")  # 사용자로부터 검색어를 입력받는 텍스트 입력 위젯 생성
+        # self.keyword = st.text_input("🔍 자격증(종목) 이름을 입력하세요:", placeholder="예: 정보처리")  # 사용자로부터 검색어를 입력받는 텍스트 입력 위젯 생성 (certi_search.py에서 처리)
+        self.keyword = None # 검색 키워드를 초기화 (certi_search.py에서 값을 할당할 예정)
+        self.certi_name = None # 선택된 자격증명을 저장할 변수 초기화
 
     @st.cache_data
-    def _load_data(_self):  # 첫 번째 인자 이름에 밑줄 추가
+    def _load_data(_self):  # 첫 번째 인자 이름에 밑줄 추가 (관례)
         """
         데이터를 로드하고 전처리하는 내부 메서드
 
@@ -28,7 +30,7 @@ class CertificationSearchApp:
             pd.DataFrame: 로드 및 전처리된 데이터프레임
         """
         try:
-            df = pd.read_csv("data\자격증.csv", encoding='cp949')  # CSV 파일 읽기 (인코딩 지정)
+            df = pd.read_csv("data\자격증.csv", encoding='cp949')  # CSV 파일 읽기 (인코딩 지정: CP949는 한글 Windows 환경에서 주로 사용)
             st.success("✅ 자격증 데이터 로드 성공!") # 데이터 로드 성공 메시지 표시
         except FileNotFoundError:
             st.error("❌ 자격증.csv 파일을 찾을 수 없습니다. 앱과 동일한 경로에 파일이 있는지 확인해주세요.")
@@ -37,7 +39,7 @@ class CertificationSearchApp:
             st.error(f"❌ 데이터 로드 중 오류 발생: {e}")
             return pd.DataFrame() # 오류 발생 시 빈 데이터프레임 반환
 
-        df = df.drop(columns=[col for col in df.columns if "Unnamed" in col], errors='ignore')  # "Unnamed"를 포함하는 불필요한 컬럼 제거 (오류 무시)
+        df = df.drop(columns=[col for col in df.columns if "Unnamed" in col], errors='ignore')  # "Unnamed"를 포함하는 불필요한 컬럼 제거 (errors='ignore'는 해당 컬럼이 없어도 오류를 발생시키지 않음)
         df.columns = df.columns.str.strip()  # 컬럼명 좌우 공백 제거
         return df  # 전처리된 데이터프레임 반환
 
@@ -66,64 +68,25 @@ class CertificationSearchApp:
         except:  # 숫자 포맷팅 중 오류가 발생한 경우
             return str(x)  # 원래 값을 문자열로 반환
 
-    # def display_results(self):
-    #     """
-    #     사용자 입력에 따라 검색 결과를 표시하는 메서드
-
-    #     사용자가 입력한 검색어를 기반으로 데이터프레임을 필터링하고,
-    #     검색 결과가 있으면 해당 데이터를 Streamlit에 표시합니다.
-    #     검색 결과가 없거나 검색어가 없는 경우에는 적절한 메시지를 표시합니다.
-    #     """
-    #     if not self.df.empty: # 데이터프레임이 비어있지 않은 경우에만 검색 수행
-    #         if self.keyword:  # 사용자가 검색어를 입력한 경우
-    #             filtered = self.df[self.df['종목별'].str.contains(self.keyword, case=False, na=False)].copy()
-    #             # 데이터프레임의 '종목별' 컬럼에서 검색어를 포함하는 행을 찾습니다 (대소문자 구분 없이, NaN 값은 False 처리).
-    #             # .copy()를 사용하여 원본 데이터프레임 변경을 방지합니다.
-
-    #             if not filtered.empty:  # 검색 결과가 있는 경우
-    #                 st.success(f"✅ '{self.keyword}' 관련 항목 {len(filtered)}건이 검색되었습니다.")  # 성공 메시지 표시
-
-    #                 # 연도 컬럼 찾기
-    #                 year_cols = [col for col in self.df.columns if '년' in col]
-    #                 # 데이터프레임 컬럼 중 '년'을 포함하는 컬럼명을 리스트로 추출합니다 (연도 컬럼).
-
-    #                 # 연도별 데이터 포맷팅
-    #                 for col in year_cols:
-    #                     filtered[col] = filtered.apply(
-    #                         lambda row: self._format_value(row[col], row['항목'], row['단위']), axis=1
-    #                     )
-    #                     # 각 연도 컬럼에 대해 _format_value 함수를 적용하여 값을 포맷팅합니다.
-    #                     # apply(..., axis=1)는 각 행에 대해 함수를 적용합니다.
-
-    #                 # 표시할 컬럼 구성 및 데이터프레임 출력
-    #                 display_cols = ['종목별', '항목'] + year_cols  # 표시할 컬럼 순서 정의 ('종목별', '항목'을 먼저 표시하고 연도별 데이터 표시)
-    #                 st.dataframe(filtered[display_cols].reset_index(drop=True))
-    #                 # 필터링된 데이터프레임을 Streamlit에 표시합니다. reset_index(drop=True)는 기존 인덱스를 제거하고 새로운 정수 인덱스를 생성합니다.
-
-    #             else:  # 검색 결과가 없는 경우
-    #                 st.warning(f"❌ '{self.keyword}'에 해당하는 자격증 종목이 데이터에 없습니다.")  # 경고 메시지 표시
-    #         else:  # 사용자가 검색어를 입력하지 않은 경우
-    #             st.info("입력란에 자격증명을 입력해 주세요.")  # 안내 메시지 표시
-    #     else:
-    #         st.warning("⚠️ 데이터를 불러오는 데 실패했습니다. 파일 경로 및 내용을 확인해주세요.")
-
     def display_results(self):
+        """검색 결과를 처리하고 표시하는 메서드"""
         if not self.df.empty: # 데이터프레임이 비어있지 않은 경우에만 검색 수행
-            if self.keyword:  # 사용자가 검색어를 입력한 경우
+            if self.keyword:  # 사용자가 검색어를 입력한 경우 (certi_search.py에서 할당)
                 filtered = self.df[self.df['종목별'].str.contains(self.keyword, case=False, na=False)].copy()
                 filtered = filtered.sort_values(by='종목별',ascending=True)
                 # 데이터프레임의 '종목별' 컬럼에서 검색어를 포함하는 행을 찾습니다 (대소문자 구분 없이, NaN 값은 False 처리).
                 # .copy()를 사용하여 원본 데이터프레임 변경을 방지합니다.
+                # 검색 결과를 '종목별' 컬럼을 기준으로 오름차순 정렬합니다.
 
                 if not filtered.empty:  # 검색 결과가 있는 경우
-                    # st.success(f"✅ '{self.keyword}' 관련 항목 {len(filtered)}건이 검색되었습니다.") 
-                    result_value = filtered['종목별'].unique()
-                    self.certi_name = st.selectbox("자격증 선택",result_value)
+                    # st.success(f"✅ '{self.keyword}' 관련 항목 {len(filtered)}건이 검색되었습니다.")
+                    result_value = filtered['종목별'].unique() # 검색된 종목의 고유한 값들을 추출
+                    self.certi_name = st.selectbox("자격증 선택",result_value) # 추출된 고유한 종목명을 Selectbox 형태로 표시하고, 선택된 값을 self.certi_name에 저장
 
                 else:  # 검색 결과가 없는 경우
                     st.warning(f"❌ '{self.keyword}'에 해당하는 자격증 종목이 데이터에 없습니다.")  # 경고 메시지 표시
-            else:  # 사용자가 검색어를 입력하지 않은 경우
-                st.info("입력란에 자격증명을 입력해 주세요.")  # 안내 메시지 표시
+            else:  # 사용자가 검색어를 입력하지 않은 경우 (certi_search.py에서 초기 상태)
+                st.info("왼쪽 검색창에 자격증명을 입력해 주세요.")  # 안내 메시지 표시
         else:
             st.warning("⚠️ 데이터를 불러오는 데 실패했습니다. 파일 경로 및 내용을 확인해주세요.")
 
