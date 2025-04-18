@@ -68,12 +68,12 @@ class QnetScheduleApp:
     def filter_and_display(self, tag, df):  # 검색하기
         if tag.endswith('기사'):
             tag = '기사'
-        if tag.endswith('기술사'):
+        elif tag.endswith('기술사'):
             tag = '기술사'
-        if tag.endswith('기능사'):
-            tag = ('기능사')
-        if tag.endswith('기능장'):
-            tag = ('기능장')
+        elif tag.endswith('기능사'):
+            tag = '기능사'
+        elif tag.endswith('기능장'):
+            tag = '기능장'
         # 입력된 태그가 특정 키워드로 끝나는 경우 해당 키워드로 일반화 (예: '정보처리기사' -> '기사')
         filtered_tests = self.search_text(tag, df['시험명'].tolist())  #tag가 포함된 시험명을 찾아 리스트로 저장
         # 데이터프레임의 '시험명' 컬럼의 모든 값을 리스트로 변환하여 search_text 함수를 사용하여 입력된 태그를 포함하는 시험명 검색
@@ -101,7 +101,7 @@ class QnetScheduleApp:
                     st.error("일정 불러오기 실패") # HTML 내용을 가져오지 못한 경우 오류 메시지 출력
 
         if st.session_state.schedule_df is not None: #세션 상태에 schedule_df 가 존재 한다면
-            tag = st.text_input("검색할 태그를 입력하세요:") #태그 입력 받기 (사용자로부터 검색할 태그를 입력받는 텍스트 입력 위젯 생성)
+            tag = self.tag #태그 입력 받기 (사용자로부터 검색할 태그를 입력받는 텍스트 입력 위젯 생성)
             if tag: #태그가 있다면
                 self.filter_and_display(tag, st.session_state.schedule_df) #태그 검색 및 출력 (입력된 태그와 세션 상태에 저장된 시험 일정 DataFrame을 이용하여 검색 및 결과 표시)
             else: #태그가 없다면

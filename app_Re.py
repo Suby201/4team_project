@@ -20,7 +20,6 @@ class BookSearchApp:
         st.write("검색창에 자격증 이름을 입력하면 관련 서적을 카드 형태로 보여드려요!")  # 앱에 대한 간단한 설명을 화면에 표시
 
         # 사용자 입력 위젯 생성
-        self.query = st.text_input("🔍 자격증 이름을 입력하세요", placeholder="정보처리기사")  # 자격증 이름을 입력받는 텍스트 입력 위젯 생성, placeholder는 입력 안내
         self.display_num = st.slider("📚 표시할 책 개수 선택", 1, 10, 5)  # 표시할 책의 개수를 선택하는 슬라이더 위젯 생성 (최소 1개, 최대 10개, 기본값 5개)
         self.filter_publisher = st.text_input("출판사 필터 (선택 사항)")  # 출판사로 검색 결과를 필터링할 수 있는 텍스트 입력 위젯 생성
 
