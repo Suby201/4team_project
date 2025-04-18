@@ -14,7 +14,7 @@ class CertificationSearchApp:
         st.title("📘 자격증 종목 통계 검색")  # 앱 제목 표시
         st.markdown("자격증 **종목명**을 입력하면 연도별 응시 및 합격률 데이터를 확인할 수 있습니다.")  # 앱 설명 Markdown 텍스트 표시
         self.df = self._load_data()  # 데이터를 로드하여 클래스 변수에 저장
-        self.keyword = st.text_input("🔍 자격증(종목) 이름을 입력하세요:", placeholder="예: 정보처리")  # 사용자로부터 검색어를 입력받는 텍스트 입력 위젯 생성
+        # self.keyword = st.text_input("🔍 자격증(종목) 이름을 입력하세요:", placeholder="예: 정보처리")  # 사용자로부터 검색어를 입력받는 텍스트 입력 위젯 생성
 
     @st.cache_data
     def _load_data(_self):  # 첫 번째 인자 이름에 밑줄 추가
@@ -66,46 +66,67 @@ class CertificationSearchApp:
         except:  # 숫자 포맷팅 중 오류가 발생한 경우
             return str(x)  # 원래 값을 문자열로 반환
 
-    def display_results(self):
-        """
-        사용자 입력에 따라 검색 결과를 표시하는 메서드
+    # def display_results(self):
+    #     """
+    #     사용자 입력에 따라 검색 결과를 표시하는 메서드
 
-        사용자가 입력한 검색어를 기반으로 데이터프레임을 필터링하고,
-        검색 결과가 있으면 해당 데이터를 Streamlit에 표시합니다.
-        검색 결과가 없거나 검색어가 없는 경우에는 적절한 메시지를 표시합니다.
-        """
+    #     사용자가 입력한 검색어를 기반으로 데이터프레임을 필터링하고,
+    #     검색 결과가 있으면 해당 데이터를 Streamlit에 표시합니다.
+    #     검색 결과가 없거나 검색어가 없는 경우에는 적절한 메시지를 표시합니다.
+    #     """
+    #     if not self.df.empty: # 데이터프레임이 비어있지 않은 경우에만 검색 수행
+    #         if self.keyword:  # 사용자가 검색어를 입력한 경우
+    #             filtered = self.df[self.df['종목별'].str.contains(self.keyword, case=False, na=False)].copy()
+    #             # 데이터프레임의 '종목별' 컬럼에서 검색어를 포함하는 행을 찾습니다 (대소문자 구분 없이, NaN 값은 False 처리).
+    #             # .copy()를 사용하여 원본 데이터프레임 변경을 방지합니다.
+
+    #             if not filtered.empty:  # 검색 결과가 있는 경우
+    #                 st.success(f"✅ '{self.keyword}' 관련 항목 {len(filtered)}건이 검색되었습니다.")  # 성공 메시지 표시
+
+    #                 # 연도 컬럼 찾기
+    #                 year_cols = [col for col in self.df.columns if '년' in col]
+    #                 # 데이터프레임 컬럼 중 '년'을 포함하는 컬럼명을 리스트로 추출합니다 (연도 컬럼).
+
+    #                 # 연도별 데이터 포맷팅
+    #                 for col in year_cols:
+    #                     filtered[col] = filtered.apply(
+    #                         lambda row: self._format_value(row[col], row['항목'], row['단위']), axis=1
+    #                     )
+    #                     # 각 연도 컬럼에 대해 _format_value 함수를 적용하여 값을 포맷팅합니다.
+    #                     # apply(..., axis=1)는 각 행에 대해 함수를 적용합니다.
+
+    #                 # 표시할 컬럼 구성 및 데이터프레임 출력
+    #                 display_cols = ['종목별', '항목'] + year_cols  # 표시할 컬럼 순서 정의 ('종목별', '항목'을 먼저 표시하고 연도별 데이터 표시)
+    #                 st.dataframe(filtered[display_cols].reset_index(drop=True))
+    #                 # 필터링된 데이터프레임을 Streamlit에 표시합니다. reset_index(drop=True)는 기존 인덱스를 제거하고 새로운 정수 인덱스를 생성합니다.
+
+    #             else:  # 검색 결과가 없는 경우
+    #                 st.warning(f"❌ '{self.keyword}'에 해당하는 자격증 종목이 데이터에 없습니다.")  # 경고 메시지 표시
+    #         else:  # 사용자가 검색어를 입력하지 않은 경우
+    #             st.info("입력란에 자격증명을 입력해 주세요.")  # 안내 메시지 표시
+    #     else:
+    #         st.warning("⚠️ 데이터를 불러오는 데 실패했습니다. 파일 경로 및 내용을 확인해주세요.")
+
+    def display_results(self):
         if not self.df.empty: # 데이터프레임이 비어있지 않은 경우에만 검색 수행
             if self.keyword:  # 사용자가 검색어를 입력한 경우
                 filtered = self.df[self.df['종목별'].str.contains(self.keyword, case=False, na=False)].copy()
+                filtered = filtered.sort_values(by='종목별',ascending=True)
                 # 데이터프레임의 '종목별' 컬럼에서 검색어를 포함하는 행을 찾습니다 (대소문자 구분 없이, NaN 값은 False 처리).
                 # .copy()를 사용하여 원본 데이터프레임 변경을 방지합니다.
 
                 if not filtered.empty:  # 검색 결과가 있는 경우
-                    st.success(f"✅ '{self.keyword}' 관련 항목 {len(filtered)}건이 검색되었습니다.")  # 성공 메시지 표시
-
-                    # 연도 컬럼 찾기
-                    year_cols = [col for col in self.df.columns if '년' in col]
-                    # 데이터프레임 컬럼 중 '년'을 포함하는 컬럼명을 리스트로 추출합니다 (연도 컬럼).
-
-                    # 연도별 데이터 포맷팅
-                    for col in year_cols:
-                        filtered[col] = filtered.apply(
-                            lambda row: self._format_value(row[col], row['항목'], row['단위']), axis=1
-                        )
-                        # 각 연도 컬럼에 대해 _format_value 함수를 적용하여 값을 포맷팅합니다.
-                        # apply(..., axis=1)는 각 행에 대해 함수를 적용합니다.
-
-                    # 표시할 컬럼 구성 및 데이터프레임 출력
-                    display_cols = ['종목별', '항목'] + year_cols  # 표시할 컬럼 순서 정의 ('종목별', '항목'을 먼저 표시하고 연도별 데이터 표시)
-                    st.dataframe(filtered[display_cols].reset_index(drop=True))
-                    # 필터링된 데이터프레임을 Streamlit에 표시합니다. reset_index(drop=True)는 기존 인덱스를 제거하고 새로운 정수 인덱스를 생성합니다.
+                    # st.success(f"✅ '{self.keyword}' 관련 항목 {len(filtered)}건이 검색되었습니다.") 
+                    result_value = filtered['종목별'].unique()
+                    self.certi_name = st.selectbox("자격증 선택",result_value)
 
                 else:  # 검색 결과가 없는 경우
                     st.warning(f"❌ '{self.keyword}'에 해당하는 자격증 종목이 데이터에 없습니다.")  # 경고 메시지 표시
             else:  # 사용자가 검색어를 입력하지 않은 경우
-                st.info("좌측 입력란에 자격증명을 입력해 주세요.")  # 안내 메시지 표시
+                st.info("입력란에 자격증명을 입력해 주세요.")  # 안내 메시지 표시
         else:
             st.warning("⚠️ 데이터를 불러오는 데 실패했습니다. 파일 경로 및 내용을 확인해주세요.")
+
 
 if __name__ == '__main__':
     app = CertificationSearchApp()  # CertificationSearchApp 클래스의 인스턴스 생성

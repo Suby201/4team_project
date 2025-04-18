@@ -58,11 +58,19 @@ class QnetScheduleApp:
             return None
 
     def filter_and_display(self, tag, df):  # 검색하기
+        if tag.endswith('기사'):
+            tag = '기사'
+        if tag.endswith('기술사'):
+            tag = '기술사'
+        if tag.endswith('기능사'):
+            tag = ('기능사')
+        if tag.endswith('기능장'):
+            tag = ('기능장')
         filtered_tests = self.search_text(tag, df['시험명'].tolist())  #tag가 포함된 시험명을 찾아 리스트로 저장
         st.dataframe(df[df['시험명'].isin(filtered_tests)].reset_index(drop=True))  # 해당하는 시험명을 데이터프레임으로 출력
 
     def run(self):
-        st.title("큐넷 시험 일정 검색") #제목 출력
+        st.title("📅큐넷 시험 일정 검색") #제목 출력
         month = st.number_input("월을 입력하세요 (예: 1):", min_value=1, max_value=12, value=1) # 월을 입력 받음
 
         if 'schedule_df' not in st.session_state: # 세션 상태에 schedule_df가 없으면 None 으로 초기화
@@ -79,7 +87,8 @@ class QnetScheduleApp:
                     st.error("일정 불러오기 실패")
 
         if st.session_state.schedule_df is not None: #세션 상태에 schedule_df 가 존재 한다면
-            tag = st.text_input("검색할 태그를 입력하세요:") #태그 입력 받기
+            # tag = st.text_input("검색할 태그를 입력하세요:") #태그 입력 받기
+            tag = self.tag
             if tag: #태그가 있다면
                 self.filter_and_display(tag, st.session_state.schedule_df) #태그 검색 및 출력
             else: #태그가 없다면

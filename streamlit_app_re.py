@@ -22,7 +22,7 @@ class CertificationVisualizer:
         st.title("📊 자격증 연도별 통계 시각화")  # 앱 제목 표시
         self.all_years = ['2019 년', '2020 년', '2021 년', '2022 년', '2023 년']  # 선택 가능한 모든 연도
         self.selected_years = st.multiselect("📆 확인할 연도를 선택하세요", self.all_years, default=self.all_years)  # 연도 선택 멀티 셀렉트 위젯
-        self.search_term = st.text_input("🔍 종목명을 입력하세요:").replace(' ', '')  # 종목명 검색 텍스트 입력 위젯
+        # self.search_term = st.text_input("🔍 종목명을 입력하세요:").replace(' ', '')  # 종목명 검색 텍스트 입력 위젯
         self.view_type = st.selectbox("📈 보고 싶은 항목을 선택하세요", ["합격률 (%)", "합격 인원 수"])  # 보고 싶은 항목 선택 셀렉트 박스
         self.current_df = self._set_current_dataframe()  # 선택된 보기에 따라 사용할 데이터프레임 설정
         self.y_label = self._set_y_label()          # y축 레이블 설정
