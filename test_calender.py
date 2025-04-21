@@ -92,23 +92,40 @@ class QnetScheduleApp:
             st.session_state.schedule_df = None
             # Streamlit 세션 상태에 'schedule_df' 키가 존재하는지 확인하고, 없으면 None으로 초기화 (앱이 다시 실행될 때 이전 상태를 유지하기 위함)
 
-        if st.button("일정 불러오기"): #일정 불러오기 버튼 클릭시 실행
-            with st.spinner("일정을 불러오는 중..."): # 로딩 중 스피너 표시 (작업이 오래 걸릴 수 있음을 사용자에게 알림)
-                html = self.fetch_schedule(month) # html 불러오기 (입력된 월에 해당하는 시험 일정 HTML 내용을 가져옴)
-                if html: #html 이 있다면
-                    schedule = self.parse_schedule(html) #html 파싱 (가져온 HTML 내용을 파싱하여 시험 일정 정보를 딕셔너리 형태로 변환)
-                    self.save_schedule(schedule, month) #파싱한 데이터 json으로 저장 (파싱된 시험 일정 정보를 JSON 파일로 저장)
-                    st.session_state.schedule_df = pd.DataFrame(list(schedule.items()), columns=['일정', '시험명']) #세션 상태에 저장
-                    # 파싱된 딕셔너리를 Pandas DataFrame으로 변환하여 '일정'과 '시험명' 컬럼을 갖도록 하고, 세션 상태에 저장 (앱이 다시 실행되어도 데이터를 유지)
-                else: #html이 없다면
-                    st.error("일정 불러오기 실패") # HTML 내용을 가져오지 못한 경우 오류 메시지 출력
+        selected_cal = st.radio("일정 필터링", ["검색","전체"], horizontal=True,key="filtering_selector")
+        if selected_cal == "검색":
+            if st.button("일정 불러오기"): #일정 불러오기 버튼 클릭시 실행
+                with st.spinner("일정을 불러오는 중..."): # 로딩 중 스피너 표시 (작업이 오래 걸릴 수 있음을 사용자에게 알림)
+                    html = self.fetch_schedule(month) # html 불러오기 (입력된 월에 해당하는 시험 일정 HTML 내용을 가져옴)
+                    if html: #html 이 있다면
+                        schedule = self.parse_schedule(html) #html 파싱 (가져온 HTML 내용을 파싱하여 시험 일정 정보를 딕셔너리 형태로 변환)
+                        self.save_schedule(schedule, month) #파싱한 데이터 json으로 저장 (파싱된 시험 일정 정보를 JSON 파일로 저장)
+                        st.session_state.schedule_df = pd.DataFrame(list(schedule.items()), columns=['일정', '시험명']) #세션 상태에 저장
+                        # 파싱된 딕셔너리를 Pandas DataFrame으로 변환하여 '일정'과 '시험명' 컬럼을 갖도록 하고, 세션 상태에 저장 (앱이 다시 실행되어도 데이터를 유지)
+                    else: #html이 없다면
+                        st.error("일정 불러오기 실패") # HTML 내용을 가져오지 못한 경우 오류 메시지 출력
 
-        if st.session_state.schedule_df is not None: #세션 상태에 schedule_df 가 존재 한다면
-            tag = self.tag #태그 입력 받기 (사용자로부터 검색할 태그를 입력받는 텍스트 입력 위젯 생성)
-            if tag: #태그가 있다면
-                self.filter_and_display(tag, st.session_state.schedule_df) #태그 검색 및 출력 (입력된 태그와 세션 상태에 저장된 시험 일정 DataFrame을 이용하여 검색 및 결과 표시)
-            else: #태그가 없다면
-                st.dataframe(st.session_state.schedule_df) #전체 데이터프레임 출력 (태그가 입력되지 않았으면 전체 시험 일정 DataFrame을 화면에 표시)
+
+            if st.session_state.schedule_df is not None: #세션 상태에 schedule_df 가 존재 한다면
+                tag = self.tag #태그 입력 받기 (사용자로부터 검색할 태그를 입력받는 텍스트 입력 위젯 생성)
+                if tag: #태그가 있다면
+                    self.filter_and_display(tag, st.session_state.schedule_df) #태그 검색 및 출력 (입력된 태그와 세션 상태에 저장된 시험 일정 DataFrame을 이용하여 검색 및 결과 표시)
+                else: #태그가 없다면
+                    st.dataframe(st.session_state.schedule_df) #전체 데이터프레임 출력 (태그가 입력되지 않았으면 전체 시험 일정 DataFrame을 화면에 표시)
+        elif selected_cal == "전체":
+            if st.button("일정 불러오기"): #일정 불러오기 버튼 클릭시 실행
+                with st.spinner("일정을 불러오는 중..."): # 로딩 중 스피너 표시 (작업이 오래 걸릴 수 있음을 사용자에게 알림)
+                    html = self.fetch_schedule(month) # html 불러오기 (입력된 월에 해당하는 시험 일정 HTML 내용을 가져옴)
+                    if html: #html 이 있다면
+                        schedule = self.parse_schedule(html) #html 파싱 (가져온 HTML 내용을 파싱하여 시험 일정 정보를 딕셔너리 형태로 변환)
+                        self.save_schedule(schedule, month) #파싱한 데이터 json으로 저장 (파싱된 시험 일정 정보를 JSON 파일로 저장)
+                        st.session_state.schedule_df = pd.DataFrame(list(schedule.items()), columns=['일정', '시험명']) #세션 상태에 저장
+                        # 파싱된 딕셔너리를 Pandas DataFrame으로 변환하여 '일정'과 '시험명' 컬럼을 갖도록 하고, 세션 상태에 저장 (앱이 다시 실행되어도 데이터를 유지)
+                        st.dataframe(st.session_state.schedule_df) #전체 데이터프레임 출력 (태그가 입력되지 않았으면 전체 시험 일정 DataFrame을 화면에 표시)
+                    else: #html이 없다면
+                        st.error("일정 불러오기 실패") # HTML 내용을 가져오지 못한 경우 오류 메시지 출력
+
+
 
 if __name__ == "__main__":
     app = QnetScheduleApp() # QnetScheduleApp 클래스의 인스턴스 생성
