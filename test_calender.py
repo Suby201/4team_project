@@ -77,8 +77,11 @@ class QnetScheduleApp:
         # 입력된 태그가 특정 키워드로 끝나는 경우 해당 키워드로 일반화 (예: '정보처리기사' -> '기사')
         filtered_tests = self.search_text(tag, df['시험명'].tolist())  #tag가 포함된 시험명을 찾아 리스트로 저장
         # 데이터프레임의 '시험명' 컬럼의 모든 값을 리스트로 변환하여 search_text 함수를 사용하여 입력된 태그를 포함하는 시험명 검색
-        st.dataframe(df[df['시험명'].isin(filtered_tests)].reset_index(drop=True))  # 해당하는 시험명을 데이터프레임으로 출력
-        # 검색된 시험명들이 포함된 행들로 새로운 데이터프레임을 만들고, 인덱스를 재설정하여 Streamlit에 표시
+        if filtered_tests:
+            st.dataframe(df[df['시험명'].isin(filtered_tests)].reset_index(drop=True))  # 해당하는 시험명을 데이터프레임으로 출력
+            # 검색된 시험명들이 포함된 행들로 새로운 데이터프레임을 만들고, 인덱스를 재설정하여 Streamlit에 표시
+        else:
+            st.info(f"'{tag}' 관련 시험 일정이 없습니다.") # 검색 결과가 없을 경우 메시지 출력
 
     def run(self):
         st.title("📅큐넷 시험 일정 검색") #제목 출력
